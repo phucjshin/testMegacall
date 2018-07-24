@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  utils:
+    image: minhbkpro/utils
+    volumes:
+      - .:/usr/src/www
+    stdin_open: true
+    tty: true
+
+  selenium:
+    image: selenium/hub:3.12.0-cobalt
+    ports:
+      - 4444:4444
+
+  chrome:
+    image: selenium/node-chrome:3.12.0-cobalt
+    depends_on:
+      - selenium
+    environment:
+      - HUB_HOST=selenium
+      - HUB_PORT=4444
