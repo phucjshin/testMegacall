@@ -56,23 +56,81 @@ class TelListIndexCest
         // $I->see('Edit-Detail-Bulk');
     }
 
-    /**
-     * @before insertRecord
-     * @after deleteRecord
-     */
-    private function recordDatatables(AcceptanceTester $I)
+    public function recordDatatables(AcceptanceTester $I)
     {
         $I->amGoingTo('check data in datatables');
-        // $numRecord = $I->grabNumRecords('tel_lists', ['module' => 'outbound', 'type' => 1, 'company_id' => 1, 'del_flag' => 'N']);
-        $I->reloadPage();
-        $I->see(3, 'table#example tbody tr td:nth-of-type(1)');
-        $I->see('aa', 'table#example tbody tr td:nth-of-type(2)'); //check ALL name o cot td thu 2
-        $I->see(3, 'table#example tbody tr td:nth-of-type(3)');
-        $I->see(0, 'table#example tbody tr td:nth-of-type(4)');
-        $I->see('2018-07-11 10:09:16', 'table#example tbody tr td:nth-of-type(5)');
-        $I->see(1, 'table#example tbody tr td:nth-of-type(6)');
-        $I->see('', 'table#example tbody tr td:nth-of-type(7)');
-        $I->see('', 'table#example tbody tr td:nth-of-type(8)');
+        $numRecord = $I->grabNumRecords('tel_lists', ['module' => 'outbound', 'type' => 1, 'company_id' => 1, 'del_flag' => 'N']);
+        $s = $I->grabRecord('master_parameters', ['function_name' => 'INDEX']);
+        $show = (int)$s['parameter_value'];
+        $telListFirst = TelList::where('module', 'outbound')
+                                    ->where('type', 1)
+                                    ->where('company_id', 1)
+                                    ->where('del_flag', 'N')
+                                    ->orderBy('no', 'asc')
+                                    ->first();
+        $I->see($telListFirst['no'], 'table#tblTelList tr:nth-child(1) > td:nth-child(1)');
+        $I->see($telListFirst['name'], 'table#tblTelList tr:nth-child(1) > td:nth-child(2)');
+        $I->see($telListFirst['quantity'], 'table#tblTelList tr:nth-child(1) > td:nth-child(3)');
+        $I->see($telListFirst['muko_quantity'], 'table#tblTelList tr:nth-child(1) > td:nth-child(4)');
+        $I->see($telListFirst['created'], 'table#tblTelList tr:nth-child(1) > td:nth-child(5)');
+        $I->see($telListFirst['entry_user'], 'table#tblTelList tr:nth-child(1) > td:nth-child(6)');
+        $I->see($telListFirst['modified'], 'table#tblTelList tr:nth-child(1) > td:nth-child(7)');
+        $I->see($telListFirst['update_user'], 'table#tblTelList tr:nth-child(1) > td:nth-child(8)');
+
+        $telListSecond = TelList::where('module', 'outbound')
+                                    ->where('type', 1)
+                                    ->where('company_id', 1)
+                                    ->where('del_flag', 'N')
+                                    ->orderBy('no', 'asc')
+                                    ->take(1)
+                                    ->skip(1)
+                                    ->get()
+                                    ->first();
+        $I->see($telListSecond['no'], 'table#tblTelList tr:nth-child(2) > td:nth-child(1)');
+        $I->see($telListSecond['name'], 'table#tblTelList tr:nth-child(2) > td:nth-child(2)');
+        $I->see($telListSecond['quantity'], 'table#tblTelList tr:nth-child(2) > td:nth-child(3)');
+        $I->see($telListSecond['muko_quantity'], 'table#tblTelList tr:nth-child(2) > td:nth-child(4)');
+        $I->see($telListSecond['created'], 'table#tblTelList tr:nth-child(2) > td:nth-child(5)');
+        $I->see($telListSecond['entry_user'], 'table#tblTelList tr:nth-child(2) > td:nth-child(6)');
+        $I->see($telListSecond['modified'], 'table#tblTelList tr:nth-child(2) > td:nth-child(7)');
+        $I->see($telListSecond['update_user'], 'table#tblTelList tr:nth-child(2) > td:nth-child(8)');
+
+        if($numRecord <= $show) {
+            $telListLast = TelList::where('module', 'outbound')
+                                    ->where('type', 1)
+                                    ->where('company_id', 1)
+                                    ->where('del_flag', 'N')
+                                    ->orderBy('no', 'desc')
+                                    ->first();
+            $I->see($telListLast['no'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(1)');
+            $I->see($telListLast['name'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(2)');
+            $I->see($telListLast['quantity'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(3)');
+            $I->see($telListLast['muko_quantity'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(4)');
+            $I->see($telListLast['created'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(5)');
+            $I->see($telListLast['entry_user'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(6)');
+            $I->see($telListLast['modified'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(7)');
+            $I->see($telListLast['update_user'], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child(8)');
+        } else {
+            $telListMiddle = TelList::where('module', 'outbound')
+                                    ->where('type', 1)
+                                    ->where('company_id', 1)
+                                    ->where('del_flag', 'N')
+                                    ->orderBy('no', 'asc')
+                                    ->take(1)
+                                    ->skip($show-2)
+                                    ->get()
+                                    ->first();
+            $s = $show - 1;
+            $I->see($telListMiddle['no'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(1)');
+            $I->see($telListMiddle['name'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(2)');
+            $I->see($telListMiddle['quantity'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(3)');
+            $I->see($telListMiddle['muko_quantity'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(4)');
+            $I->see($telListMiddle['created'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(5)');
+            $I->see($telListMiddle['entry_user'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(6)');
+            $I->see($telListMiddle['modified'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(7)');
+            $I->see($telListMiddle['update_user'], 'table#tblTelList tr:nth-child('.$s.') > td:nth-child(8)');
+        }
+
     }
 
     protected function insertTelList(AcceptanceTester $I)
@@ -140,7 +198,7 @@ class TelListIndexCest
       *@dataProvider fieldProvider
       *
      */
-    public function orderDatatables(AcceptanceTester $I, \Codeception\Example $example)
+    private function orderDatatables(AcceptanceTester $I, \Codeception\Example $example)
     {
         $I->amGoingTo('check order in datatables');
         $numRecord = $I->grabNumRecords('tel_lists', ['module' => 'outbound', 'type' => 1, 'company_id' => 1, 'del_flag' => 'N']);
@@ -150,13 +208,13 @@ class TelListIndexCest
         var_dump($show);
 
         $test = $example['field'];
-        $telListNameFirst = TelList::where('module', 'outbound')
+        $telListFirst = TelList::where('module', 'outbound')
                                     ->where('type', 1)
                                     ->where('company_id', 1)
                                     ->where('del_flag', 'N')
                                     ->orderBy($test, 'asc')
                                     ->first();
-        $telListNameLast = TelList::where('module', 'outbound')
+        $telListLast = TelList::where('module', 'outbound')
                                     ->where('type', 1)
                                     ->where('company_id', 1)
                                     ->where('del_flag', 'N')
@@ -167,38 +225,38 @@ class TelListIndexCest
             if($test != 'no') {
                 $I->click('table#tblTelList th:nth-child('.$example['column'].')'); //click sort
                 $I->wait(1);
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
                 $I->click('table#tblTelList th:nth-child('.$example['column'].')'); //click sort
                 $I->wait(1);
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
             } else {
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
                 $I->click('table#tblTelList th:nth-child('.$example['column'].')'); //click sort
                 $I->wait(1);
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child('.$numRecord.') > td:nth-child('.$example['column'].')');
             }
             
         } else {
             if($test != 'no') {
                 $I->click('table#tblTelList th:nth-child('.$example['column'].')'); //click sort
                 $I->wait(1);
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
                 $I->click('table#tblTelList th:nth-child('.$example['column'].')'); //click sort
                 $I->wait(1);
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
             } else {
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
                 $I->click('table#tblTelList th:nth-child('.$example['column'].')'); //click sort
                 $I->wait(1);
-                $I->see($telListNameLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
-                $I->see($telListNameFirst[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
+                $I->see($telListLast[$test], 'table#tblTelList tr:nth-child(1) > td:nth-child('.$example['column'].')');
+                $I->see($telListFirst[$test], 'table#tblTelList tr:nth-child('.$show.') > td:nth-child('.$example['column'].')');
             }
         }
     }
