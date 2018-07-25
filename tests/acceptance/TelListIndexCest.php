@@ -8,14 +8,12 @@ class TelListIndexCest
 {
     public function _before(AcceptanceTester $I)
     {
-        // $I->haveRecord('tel_lists', ['no' => '3', 'module' => 'outbound', 'type' => '1', 'company_id' => '1', 'name' => 'aa', 'quantity' => '3','columns' => '["a", "b"]','del_flag' => 'N','created' => '2018-07-11 10:09:16']);
         $I->amOnPage('/tel_lists/index/outbound');
     }
 
     public function _after(AcceptanceTester $I)
     {
-        // $telList = TelList::where('name', 'aa')->first();
-        // $telList->delete();
+        //
     }
 
     protected function insertRecord(AcceptanceTester $I)
@@ -37,9 +35,9 @@ class TelListIndexCest
         $I->see('発信リスト', 'h4');
     //check link, button
         $I->see('新規登録', 'a');
-        $I->see('全選択', ['css' => '#select-all']);
-        $I->see(' 削除', ['css' => '#del-select']);
-        $I->see('ダウロード', ['css' => '#download']);
+        $I->see('全選択', ['css' => '#btn-selectAll']);
+        $I->see(' 削除', ['css' => '#btn-delete']);
+        $I->see('ダウロード', ['css' => '#btn-download']);
     //check datatable
         $I->see('検索:');
         $I->see('編集', 'a');
@@ -56,7 +54,7 @@ class TelListIndexCest
         // $I->see('Edit-Detail-Bulk');
     }
 
-    public function recordDatatables(AcceptanceTester $I)
+    private function recordDatatables(AcceptanceTester $I)
     {
         $I->amGoingTo('check data in datatables');
         $numRecord = $I->grabNumRecords('tel_lists', ['module' => 'outbound', 'type' => 1, 'company_id' => 1, 'del_flag' => 'N']);
@@ -191,7 +189,7 @@ class TelListIndexCest
     {
         $I->amGoingTo('check search in datatables');
         $I->pressKey('input[type="search"]','aa');
-        $I->waitForText('aa', 2, 'table#example');
+        $I->waitForText('aa', 2, 'table#tblTelList');
     }
 
     /**
@@ -273,7 +271,7 @@ class TelListIndexCest
             ['field' => 'created', 'column' => 5],
             ['field' => 'entry_user', 'column' => 6],
             ['field' => 'modified', 'column' => 7],
-            ['field' => 'update_user', 'column' => 8],
+            ['field' => 'update_user', 'column' => 8]
         ];
     }
 
@@ -293,7 +291,7 @@ class TelListIndexCest
 
     // test 4, 5, 6, 7, 8
     
-    private function btnDeleteNotChecked(AcceptanceTester $I)
+    private function deleteNotChecked(AcceptanceTester $I)
     {
         //4
         $I->click('削除');
@@ -361,7 +359,7 @@ class TelListIndexCest
         $outSchedules2->delete();
     }
 
-    private function deleteTelListSuccess(AcceptanceTester $I)
+    public function deleteTelListSuccess(AcceptanceTester $I)
     {
         //7,8
         $I->haveRecord('tel_lists', ['no' => '3', 'module' => 'outbound', 'type' => '1', 'company_id' => '1', 'name' => 'dongxxx', 'quantity' => '3','columns' => '["a", "b"]','del_flag' => 'N','created' => '2018-07-11 10:09:16']);
