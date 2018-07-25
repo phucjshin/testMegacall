@@ -28,7 +28,7 @@ class TelListIndexCest
     }
 
     // test 1
-    private function init(AcceptanceTester $I)
+    public function init(AcceptanceTester $I)
     {
         $I->amGoingTo('check existed element');
     //check title
@@ -54,7 +54,7 @@ class TelListIndexCest
         // $I->see('Edit-Detail-Bulk');
     }
 
-    private function recordDatatables(AcceptanceTester $I)
+    public function recordDatatables(AcceptanceTester $I)
     {
         $I->amGoingTo('check data in datatables');
         $numRecord = $I->grabNumRecords('tel_lists', ['module' => 'outbound', 'type' => 1, 'company_id' => 1, 'del_flag' => 'N']);
@@ -147,7 +147,7 @@ class TelListIndexCest
      * @before insertTelList
      * @after deleteTelList
      */
-    private function numberRecordDatatables(AcceptanceTester $I)
+    public function numberRecordDatatables(AcceptanceTester $I)
     {
         $I->amGoingTo('check number of record');
         $I->reloadPage();
@@ -185,7 +185,7 @@ class TelListIndexCest
      * @before insertRecord
      * @after deleteRecord
      */
-    private function searchDatatables(AcceptanceTester $I)
+    public function searchDatatables(AcceptanceTester $I)
     {
         $I->amGoingTo('check search in datatables');
         $I->pressKey('input[type="search"]','aa');
@@ -196,7 +196,7 @@ class TelListIndexCest
       *@dataProvider fieldProvider
       *
      */
-    private function orderDatatables(AcceptanceTester $I, \Codeception\Example $example)
+    public function orderDatatables(AcceptanceTester $I, \Codeception\Example $example)
     {
         $I->amGoingTo('check order in datatables');
         $numRecord = $I->grabNumRecords('tel_lists', ['module' => 'outbound', 'type' => 1, 'company_id' => 1, 'del_flag' => 'N']);
@@ -277,7 +277,7 @@ class TelListIndexCest
 
 
     // test 2, 3
-    private function btnSelectAll(AcceptanceTester $I)
+    public function btnSelectAll(AcceptanceTester $I)
     {
         //2
         $I->click('全選択');
@@ -291,14 +291,14 @@ class TelListIndexCest
 
     // test 4, 5, 6, 7, 8
     
-    private function deleteNotChecked(AcceptanceTester $I)
+    public function deleteNotChecked(AcceptanceTester $I)
     {
         //4
         $I->click('削除');
         $I->see('データが選択されていない !');
     }
 
-    private function deleteTelListIsDeleted(AcceptanceTester $I)
+    public function deleteTelListIsDeleted(AcceptanceTester $I)
     {
         //5
         $I->haveRecord('tel_lists', ['no' => '1', 'module' => 'outbound', 'type' => '1', 'company_id' => '1', 'name' => 'quangxxx', 'quantity' => '3','columns' => '["a", "b"]','del_flag' => 'N','created' => '2018-07-11 10:09:16']);
@@ -320,7 +320,7 @@ class TelListIndexCest
      * @dataProvider statusProvider
      *
      */
-    private function deleteTelListInSchedule(AcceptanceTester $I, \Codeception\Example $example)
+    public function deleteTelListInSchedule(AcceptanceTester $I, \Codeception\Example $example)
     {
         //6
         $I->haveRecord('tel_lists', ['no' => '1', 'module' => 'outbound', 'type' => '1', 'company_id' => '1', 'name' => 'khangxxx', 'quantity' => '3','columns' => '["a", "b"]','del_flag' => 'N','created' => '2018-07-11 10:09:16']);
@@ -337,7 +337,7 @@ class TelListIndexCest
         $outSchedules->delete();
     }
         
-    private function deleteTelListInScheduleEnded(AcceptanceTester $I)
+    public function deleteTelListInScheduleEnded(AcceptanceTester $I)
     {
         //7, 8
         $I->haveRecord('tel_lists', ['no' => '3', 'module' => 'outbound', 'type' => '1', 'company_id' => '1', 'name' => 'trongxxx', 'quantity' => '3','columns' => '["a", "b"]','del_flag' => 'N','created' => '2018-07-11 10:09:16']);
@@ -398,7 +398,7 @@ class TelListIndexCest
 
 
     // test 9, 10
-    private function btnDownload(AcceptanceTester $I)
+    public function btnDownload(AcceptanceTester $I)
     {
         //9
         $I->click('ダウロード');
